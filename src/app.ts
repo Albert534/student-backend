@@ -6,7 +6,7 @@ import AuthRoutes from './routes/auth';
 import StudentRoutes from './routes/students';
 import ClassRoutes from './routes/class';
 import DashboardRoutes from './routes/dashboard';
-t;
+
 import { errorHandler } from './middleware/errorHandler';
 
 import routes from './utils/routes';
@@ -22,7 +22,7 @@ app.use(
 );
 console.log('App loaded'); // confirm app file runs
 
-app.get('/', (_req: any, res: { send: (arg0: string) => any }) =>
+app.get('/', (req: any, res: { send: (arg0: string) => any }) =>
 	res.send('Server is running!'),
 );
 app.use(routes.auth, AuthRoutes); //routes is a seperate route attribute defined in utils
