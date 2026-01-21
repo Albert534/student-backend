@@ -1,0 +1,14 @@
+# version: "3"
+
+# services:
+#   db:
+#     image: postgres
+#     restart: always
+#     environment:
+#       POSTGRES_USER: postgres
+#       POSTGRES_PASSWORD: AungPaingOo227788
+#       POSTGRES_DB: student-management-system
+#   app:
+#     image: express-sms
+#     ports:
+#       - 13000:3000
