@@ -77,17 +77,17 @@ export const loginController = async (
 	}
 };
 
-export const logOutController = async (res: Response) => {
+export const logOutController = async (req: Request, res: Response) => {
 	try {
-		// Clear headers
-		res.header('Authorization', '');
-		res.header('x-refresh-token', '');
-		res.status(200).json({
+		res.setHeader('Authorization', '');
+		res.setHeader('x-refresh-token', '');
+
+		return res.status(200).json({
 			success: true,
 			message: 'Logout successful',
 		});
-	} catch (error: any) {
-		res.status(500).json({
+	} catch (error) {
+		return res.status(500).json({
 			success: false,
 			message: 'Something went wrong',
 		});
