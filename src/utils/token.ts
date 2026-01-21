@@ -1,5 +1,5 @@
 import jwt, { JwtPayload } from 'jsonwebtoken';
-import { CustomError } from '../globalError';
+
 const secretKey = process.env.JWT_ACCESSTOKEN_KEY!;
 const secretRefresh = process.env.JWT_REFRESHTOKEN_KEY!;
 export const tokenGenerator = ({
@@ -15,7 +15,7 @@ export const tokenGenerator = ({
 			name: name,
 		},
 		secretKey, // secret key goes second
-		{ expiresIn: '1m' } // options go third
+		{ expiresIn: '1m' }, // options go third
 	);
 	const refreshToken = jwt.sign(
 		{
@@ -23,7 +23,7 @@ export const tokenGenerator = ({
 			email: name,
 		},
 		secretRefresh,
-		{ expiresIn: '7d' }
+		{ expiresIn: '7d' },
 	);
 
 	return { accessToken, refreshToken };
@@ -39,7 +39,7 @@ export const tokenValidator = ({
 	try {
 		const decoded = jwt.verify(
 			token,
-			type === 'access' ? secretKey : secretRefresh
+			type === 'access' ? secretKey : secretRefresh,
 		);
 		return decoded;
 	} catch (error) {

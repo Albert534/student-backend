@@ -11,8 +11,7 @@ import { usersTable } from '../db/schema';
 import { db } from '..';
 import { eq } from 'drizzle-orm';
 import bcrypt from 'bcrypt';
-import { tokenGenerator, tokenValidator } from '../utils/token';
-import { ref } from 'node:process';
+import { tokenGenerator } from '../utils/token';
 
 // TypeScript interface for request body
 interface LoginBody {
@@ -22,7 +21,7 @@ interface LoginBody {
 
 export const loginController = async (
 	req: Request<{}, {}, LoginBody>,
-	res: Response
+	res: Response,
 ) => {
 	try {
 		const { email, password } = req.body;
@@ -70,24 +69,15 @@ export const loginController = async (
 			},
 		});
 	} catch (error: any) {
-		// If it's a known CustomError, use its message & status
-		if (error instanceof CustomError) {
-			return res.status(error.statusCode).json({
-				success: false,
-				message: error.message,
-			});
-		}
-
-		// Unexpected errors
-		console.error('Login error:', error);
 		res.status(500).json({
 			success: false,
 			message: 'Something went wrong',
 		});
+		return; // Add this line to return from the function
 	}
 };
 
-export const logOutController = async (req: Request, res: Response) => {
+export const logOutController = async (res: Response) => {
 	try {
 		// Clear headers
 		res.header('Authorization', '');
@@ -114,7 +104,7 @@ export const refreshController = async (req: Request, res: Response) => {
 
 		const decodedRefreshToken = jwt.verify(
 			oldRefreshToken,
-			process.env.JWT_REFRESHTOKEN_KEY!
+			process.env.JWT_REFRESHTOKEN_KEY!,
 		) as RefreshTokenPayload;
 
 		if (decodedRefreshToken === null) {
