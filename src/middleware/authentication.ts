@@ -5,14 +5,11 @@ import { tokenValidator } from '../utils/token';
 export const authHandler = (
 	req: Request,
 	res: Response,
-	next: NextFunction
+	next: NextFunction,
 ) => {
 	try {
 		const authHeader = req.headers.authorization; // ✅ lowercase
 		const refreshToken = req.headers['x-refresh-token'] as string | undefined;
-		console.log('req.headers:', req.headers);
-		console.log('authHeader:', authHeader);
-		console.log('refreshToken:', refreshToken);
 
 		if (!authHeader) {
 			throw new CustomError('Authorization header missing', 401);

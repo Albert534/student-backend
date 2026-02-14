@@ -4,6 +4,7 @@ import {
 	varchar,
 	boolean,
 	primaryKey,
+	text,
 } from 'drizzle-orm/pg-core';
 
 export const usersTable = pgTable('users', {
@@ -19,7 +20,7 @@ export const classesTable = pgTable('classes', {
 	id: integer().primaryKey().generatedAlwaysAsIdentity(),
 	name: varchar({ length: 255 }).notNull(),
 	teacher: varchar({ length: 255 }).notNull(),
-	image: varchar({ length: 255 }).notNull(),
+	image: text(),
 	price: integer().notNull(),
 	type: varchar({ length: 255 }).notNull(),
 	done: boolean().notNull().default(false),
@@ -48,5 +49,5 @@ export const studentClassesTable = pgTable(
 	},
 	(table) => ({
 		pk: primaryKey({ columns: [table.student_id, table.class_id] }),
-	})
+	}),
 );

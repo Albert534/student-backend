@@ -27,7 +27,27 @@ export const getStudentsController = async (req: Request, res: Response) => {
 		// -------------------------
 
 		if (search) {
-			conditions.push(like(studentTable.name, `%${search}%`));
+			conditions.push(
+				or(
+					like(studentTable.name, `%${search}%`),
+
+					exists(
+						db
+							.select({ id: studentClassesTable.student_id })
+							.from(studentClassesTable)
+							.innerJoin(
+								classTable,
+								eq(classTable.id, studentClassesTable.class_id),
+							)
+							.where(
+								and(
+									eq(studentClassesTable.student_id, studentTable.id),
+									like(classTable.name, `%${search}%`),
+								),
+							),
+					),
+				),
+			);
 		}
 
 		if (filterArray.includes('accomplished')) {
@@ -39,7 +59,7 @@ export const getStudentsController = async (req: Request, res: Response) => {
 		// -------------------------
 		// 2️⃣ Handle sorting
 		// -------------------------
-		let sortColumn = studentTable.joinedDate;
+		// let sortColumn = studentTable.joinedDate;
 		let sortOrder = desc;
 
 		if (filterArray.includes('oldest')) sortOrder = asc;
@@ -71,10 +91,10 @@ export const getStudentsController = async (req: Request, res: Response) => {
 			.where(studentTable.activate, true)
 			.leftJoin(
 				studentClassesTable,
-				eq(studentClassesTable.student_id, studentTable.id)
+				eq(studentClassesTable.student_id, studentTable.id),
 			)
 			.groupBy(studentTable.id)
-			.orderBy(sortOrder(studentTable.joinedDate))
+			.orderBy(sortOrder(studentTable.id))
 			.limit(limitNumber)
 			.offset(offset);
 
@@ -175,7 +195,7 @@ export const editStudentController = async (req: Request, res: Response) => {
 
 		const updateData = pickBy(
 			{ name, joinedDate, accomplishedClasses },
-			(value: any) => value !== undefined && value !== null && value !== ''
+			(value: any) => value !== undefined && value !== null && value !== '',
 		);
 
 		const updateStudent = await db
@@ -208,7 +228,7 @@ export const editStudentController = async (req: Request, res: Response) => {
 				await tx
 					.insert(studentClassesTable)
 					.values(
-						classIds.map((c: number) => ({ student_id: id, class_id: c }))
+						classIds.map((c: number) => ({ student_id: id, class_id: c })),
 					);
 			}
 		});

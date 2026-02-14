@@ -8,11 +8,20 @@ import { and, like, eq, inArray, desc } from 'drizzle-orm';
 export const addClassController = async (req: Request, res: Response) => {
 	try {
 		const { name, teacher, price, startDate, endDate, type, image } = req.body;
-
+		console.log(
+			'The required fields are: ',
+			name,
+			teacher,
+			price,
+			startDate,
+			endDate,
+			type,
+			image,
+		);
 		if (
 			!name ||
 			!teacher ||
-			!price ||
+			// !price ||
 			!startDate ||
 			!endDate ||
 			!image ||

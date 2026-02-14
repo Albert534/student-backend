@@ -13,13 +13,25 @@ import routes from './utils/routes';
 import { authHandler } from './middleware/authentication';
 const app = express();
 app.use(express.json());
+const allowedOrigins = [
+	'https://sims-dashboard-olive.vercel.app',
+	'http://localhost:5173',
+];
+
 app.use(
 	cors({
-		origin: 'http://localhost:5173', // your frontend URL EXACTLY
+		origin: function (origin, callback) {
+			if (!origin || allowedOrigins.includes(origin)) {
+				callback(null, true);
+			} else {
+				callback(new Error('Not allowed by CORS'));
+			}
+		},
 		credentials: true,
 		exposedHeaders: ['Authorization', 'X-Refresh-Token'],
 	}),
 );
+
 console.log('App loaded'); // confirm app file runs
 
 app.get('/', (req: any, res: { send: (arg0: string) => any }) =>
